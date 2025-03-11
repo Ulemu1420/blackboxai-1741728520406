@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Music Player</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-b from-purple-900 to-black min-h-screen text-white">
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 bg-black/30 backdrop-blur-lg z-50">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 class="text-xl font-bold">Mobile Music Player</h1>
+            <button id="playlistToggle" class="text-white hover:text-purple-400 transition-colors">
+                <i class="fas fa-list text-xl"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Player Area -->
+    <main class="container mx-auto px-4 pt-20 pb-24">
+        <!-- Album Art -->
+        <div class="w-64 h-64 mx-auto mt-8 rounded-lg overflow-hidden shadow-2xl">
+            <img id="albumArt" src="https://images.pexels.com/photos/1626481/pexels-photo-1626481.jpeg" alt="Album Art" 
+                 class="w-full h-full object-cover">
+        </div>
+
+        <!-- Track Info -->
+        <div class="text-center mt-8">
+            <h2 id="trackTitle" class="text-2xl font-bold mb-2">Track Title</h2>
+            <p id="artistName" class="text-gray-400">Artist Name</p>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="mt-8">
+            <div class="bg-gray-700 rounded-full h-1.5 relative">
+                <div id="progressBar" class="bg-purple-500 h-full rounded-full w-0 transition-all"></div>
+            </div>
+            <div class="flex justify-between mt-2 text-sm text-gray-400">
+                <span id="currentTime">0:00</span>
+                <span id="duration">0:00</span>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="flex justify-center items-center gap-8 mt-8">
+            <button id="prevBtn" class="hover:text-purple-400 transition-colors">
+                <i class="fas fa-backward text-2xl"></i>
+            </button>
+            <button id="playPauseBtn" class="w-16 h-16 rounded-full bg-purple-600 hover:bg-purple-700 transition-colors flex items-center justify-center">
+                <i class="fas fa-play text-2xl"></i>
+            </button>
+            <button id="nextBtn" class="hover:text-purple-400 transition-colors">
+                <i class="fas fa-forward text-2xl"></i>
+            </button>
+        </div>
+    </main>
+
+    <!-- Playlist Sidebar -->
+    <div id="playlist" class="fixed top-0 right-0 bottom-0 w-80 bg-black/95 backdrop-blur-lg transform translate-x-full transition-transform duration-300 z-40 overflow-y-auto">
+        <div class="p-4 pt-20">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-lg font-semibold">Playlist</h3>
+                <button id="addSongBtn" class="text-purple-500 hover:text-purple-400 transition-colors">
+                    <i class="fas fa-plus"></i> Add Song
+                </button>
+            </div>
+            <ul id="playlistItems" class="space-y-4">
+                <!-- Playlist items will be dynamically added here -->
+            </ul>
+        </div>
+    </div>
+
+    <!-- Add Song Modal -->
+    <div id="addSongModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden items-center justify-center z-50">
+        <div class="bg-gray-900 p-6 rounded-lg w-full max-w-md mx-4">
+            <h3 class="text-xl font-semibold mb-4">Add New Song</h3>
+            <form id="addSongForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium mb-1">Title</label>
+                    <input type="text" id="songTitle" class="w-full px-3 py-2 bg-gray-800 rounded border border-gray-700 focus:border-purple-500 focus:outline-none" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">Artist</label>
+                    <input type="text" id="songArtist" class="w-full px-3 py-2 bg-gray-800 rounded border border-gray-700 focus:border-purple-500 focus:outline-none" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">Audio URL</label>
+                    <input type="url" id="songUrl" class="w-full px-3 py-2 bg-gray-800 rounded border border-gray-700 focus:border-purple-500 focus:outline-none" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">Album Art URL</label>
+                    <input type="url" id="albumArtUrl" class="w-full px-3 py-2 bg-gray-800 rounded border border-gray-700 focus:border-purple-500 focus:outline-none" required>
+                </div>
+                <div class="flex justify-end gap-3 mt-6">
+                    <button type="button" id="cancelAddSong" class="px-4 py-2 text-gray-400 hover:text-white transition-colors">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded transition-colors">Add Song</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Error Notification -->
+    <div id="notification" class="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-red-500 text-white px-6 py-3 rounded-lg opacity-0 transition-opacity duration-300 pointer-events-none">
+        Error message goes here
+    </div>
+
+    <!-- Audio Element -->
+    <audio id="audioPlayer"></audio>
+
+    <script src="main.js"></script>
+</body>
+</html>
